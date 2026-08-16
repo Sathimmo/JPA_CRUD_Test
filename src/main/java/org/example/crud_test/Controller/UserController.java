@@ -1,9 +1,14 @@
 package org.example.crud_test.Controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.example.crud_test.DTO.Request.UserRepuest;
 import org.example.crud_test.DTO.Response.UserResponse;
 import org.example.crud_test.Service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,5 +55,14 @@ public class UserController {
     public ResponseEntity<UserResponse> deleteUserById(@PathVariable Long id){
         UserResponse deleteUserById = userService.deleteUserById(id);
         return ResponseEntity.ok(deleteUserById);
+    }
+
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<UserResponse>> getAllUserPaginated(
+            @Parameter(hidden = true)
+            @PageableDefault(page = 0, size = 20, sort = "id", direction = Sort.Direction.DESC)Pageable pageable){
+        Page<UserResponse> users = userService.getAllUserPaginated(pageable);
+        return ResponseEntity.ok(users);
+
     }
 }

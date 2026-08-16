@@ -7,6 +7,8 @@ import org.example.crud_test.Exeption.ResourceNotFoundException;
 import org.example.crud_test.Model.User;
 import org.example.crud_test.Repository.UserRepository;
 import org.example.crud_test.Service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,7 +24,6 @@ public class UserServiceImp implements UserService {
         User user = new User();
         user.setName(repuest.getName());
         user.setEmail(repuest.getEmail());
-
         User saveUser = userRepository.save(user);
         return new UserResponse(saveUser.getId(), saveUser.getName(), saveUser.getEmail());
     }
@@ -58,7 +59,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserResponse deleteUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found by Id "+id));
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException());
         UserResponse response = new UserResponse(user.getId(), user.getName(), user.getEmail());
         userRepository.delete(user);
         return response;
@@ -73,5 +74,12 @@ public class UserServiceImp implements UserService {
         return new UserResponse(user.getId(), user.getName(), user.getEmail());
     }
 
-
+    @Override
+    public Page<UserResponse> getAllUserPaginated(Pageable pageable) {
+        return userRepository.findAll(pageable).map(user -> new  UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getName()
+        ));
+    }
 }

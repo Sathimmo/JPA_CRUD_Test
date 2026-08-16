@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 @Data
@@ -16,6 +18,7 @@ public class User {
     private Long id;
     @Column(nullable = false)
     private String name;
+
     @Column(nullable = false, unique = true)
     private String email;
 }
